@@ -2,6 +2,7 @@ package tdd.vendingMachine.domain.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import tdd.vendingMachine.domain.Money;
 import tdd.vendingMachine.domain.product.exception.EmptyShelfException;
 
 import static lombok.AccessLevel.PACKAGE;
@@ -14,7 +15,7 @@ class ShelfWithProducts {
 
     private int numberOfProducts;
 
-    public Price getPrice() {
+    public Money getPrice() {
 
         if(numberOfProducts <= 0 ){
            throw new EmptyShelfException("Cannot retrive price form empty shelf");

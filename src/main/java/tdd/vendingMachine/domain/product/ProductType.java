@@ -1,18 +1,15 @@
 package tdd.vendingMachine.domain.product;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
+import tdd.vendingMachine.domain.Money;
 
-import java.math.BigDecimal;
-
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EqualsAndHashCode
 @Getter(AccessLevel.PACKAGE)
 class ProductType {
 
-    private Price price;
+    private final Money price;
 
-    private String productDescription;
+    private final String productDescription;
+
 }

@@ -11,6 +11,6 @@ public class Application {
     }
 
     //TODO transactions
-    //TODO some sort of persistance
+    //TODO some sort from persistance
 
 }

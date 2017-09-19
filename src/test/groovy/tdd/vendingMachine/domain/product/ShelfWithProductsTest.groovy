@@ -1,6 +1,7 @@
 package tdd.vendingMachine.domain.product
 
 import spock.lang.Specification
+import tdd.vendingMachine.domain.Money
 import tdd.vendingMachine.domain.product.exception.EmptyShelfException
 
 class ShelfWithProductsTest extends Specification {
@@ -25,7 +26,7 @@ class ShelfWithProductsTest extends Specification {
 
     def "Returns price of the products"() {
         given:
-            Price price = Price.of(3.3)
+            Money price = Money.from(3, 30)
             ProductType product = productWithPrice(price)
         when:
             ShelfWithProducts shelf = new ShelfWithProducts(product, ANY_NUMBER )
@@ -33,7 +34,7 @@ class ShelfWithProductsTest extends Specification {
             shelf.price == price
     }
 
-    private ProductType productWithPrice(Price price){
+    private ProductType productWithPrice(Money price){
         Mock(ProductType){
             getPrice() >> price
         }

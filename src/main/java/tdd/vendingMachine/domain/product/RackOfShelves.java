@@ -1,21 +1,22 @@
 package tdd.vendingMachine.domain.product;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import tdd.vendingMachine.domain.Money;
+import tdd.vendingMachine.domain.product.exception.NoSuchShelfException;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RackOfShelves {
 
-    private Map<Integer, ShelfWithProducts> shelves;
+    private final Map<Integer, ShelfWithProducts> shelves;
 
-    public BigDecimal priceOfProductAt(int shelfNumber ){
+    public Money priceOfProductAt(int shelfNumber ){
         ShelfWithProducts shelfWithProductsWithProducts = shelves.get(shelfNumber);
         if(shelfWithProductsWithProducts == null){
-            throw new IllegalArgumentException(String.format("Wrong shelf number: '%d'", shelfNumber));
+            throw new NoSuchShelfException(String.format("Wrong shelf number: '%d'", shelfNumber));
         }
 
-        return shelfWithProductsWithProducts.getPrice().getValue();
+        return shelfWithProductsWithProducts.getPrice();
     }
 }

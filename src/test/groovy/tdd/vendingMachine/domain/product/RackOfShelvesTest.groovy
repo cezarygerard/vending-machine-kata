@@ -1,6 +1,8 @@
 package tdd.vendingMachine.domain.product
 
 import spock.lang.Specification
+import tdd.vendingMachine.domain.Money
+import tdd.vendingMachine.domain.product.exception.NoSuchShelfException
 
 
 class RackOfShelvesTest extends Specification {
@@ -13,7 +15,7 @@ class RackOfShelvesTest extends Specification {
         when:
             RackOfShelves rack = new RackOfShelves(shelves);
         then:
-            rack.priceOfProductAt(EXISTING) == shelfWithProducts().getPrice().value
+            rack.priceOfProductAt(EXISTING) == shelfWithProducts().getPrice()
     }
 
     def "price request of non existing shelf throws exception"() {
@@ -25,7 +27,7 @@ class RackOfShelvesTest extends Specification {
         when:
             rack.priceOfProductAt(NON_EXISTING)
         then:
-            thrown IllegalArgumentException
+            thrown NoSuchShelfException
     }
 
     Integer EXISTING = 3
@@ -33,7 +35,7 @@ class RackOfShelvesTest extends Specification {
 
     ShelfWithProducts shelfWithProducts() {
         Mock(ShelfWithProducts){
-            getPrice() >> Price.of(BigDecimal.ONE)
+            getPrice() >> Money.from(1,1)
         }
     }
 
