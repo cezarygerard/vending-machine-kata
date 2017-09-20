@@ -9,14 +9,25 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class RackOfShelves {
 
+    //repository
     private final Map<Integer, ShelfWithProducts> shelves;
 
     public Money priceOfProductAt(int shelfNumber ){
+        return findShelf(shelfNumber).getPrice();
+    }
+
+//    public void releaseProduct(int shelfNumber){
+//        return findShelf(shelfNumber).releaseProduct();
+//    }
+
+    private ShelfWithProducts findShelf(int shelfNumber){
         ShelfWithProducts shelfWithProductsWithProducts = shelves.get(shelfNumber);
         if(shelfWithProductsWithProducts == null){
             throw new NoSuchShelfException(String.format("Wrong shelf number: '%d'", shelfNumber));
         }
 
-        return shelfWithProductsWithProducts.getPrice();
+        return shelfWithProductsWithProducts;
     }
+
+
 }

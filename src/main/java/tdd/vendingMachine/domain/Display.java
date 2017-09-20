@@ -2,5 +2,11 @@ package tdd.vendingMachine.domain;
 
 interface Display {
 
-    void showText(String text);
+    void price(Money money);
+
+    void noProductFound();
+
+    void selectProduct();
 }
+
+

@@ -1,58 +1,82 @@
 package tdd.vendingMachine.domain
 
 import spock.lang.Specification
-import tdd.vendingMachine.domain.product.RackOfShelves
 import tdd.vendingMachine.domain.product.exception.ProductException
-import tdd.vendingMachine.domain.transaction.PurchaseSessionFactory
-
-import static tdd.vendingMachine.domain.VendingMachine.NO_PRODUCT
+import tdd.vendingMachine.domain.transaction.PurchaseSession
 
 class VendingMachineTest extends Specification {
 
-    def "Selecting product from shelf displays its price"() {
-        given:
-            int shelfNumber = 3
-            Money price = Money.from(2, 50)
-            shelves.priceOfProductAt(shelfNumber) >> price
-        when:
-            machine.selectProductFrom(shelfNumber)
-        then:
-            1 * display.showText(price.toString())
-    }
-
     def "Error in acquiring price results in error message"() {
         given:
-            shelves.priceOfProductAt(ANY_NUMBER) >> {throw new ProductException()}
+            purchaseSession.start(SOME_NUMBER) >> {throw new ProductException()}
         when:
-            machine.selectProductFrom(ANY_NUMBER)
+            machine.selectProductFrom(SOME_NUMBER)
         then:
-            1 * display.showText(NO_PRODUCT)
+            1 * display.noProductFound()
     }
 
-//    def "Selecting product from shelf starts transaction"() {
-//        when:
-//            machine.selectProductFrom(ANY_NUMBER)
-//        then:
-//            1 *
-//    }
-
-    def "Selecting product from shelf having transaction started displays message"() {
-
+    def "Selecting product from shelf starts new transaction"() {
+        when:
+            machine.selectProductFrom(SOME_NUMBER)
+        then:
+            1 * purchaseSession.start(SOME_NUMBER)
     }
 
-    def setup(){
-//        shelves.priceOfProductAt(_) >> ANY_PRICE
+    def "Displays price after starting  transaction"() {
+        given:
+            purchaseSession.amountLeft() >> SOME_MONEY
+        when:
+            machine.selectProductFrom(SOME_NUMBER)
+        then:
+            1 * display.price(SOME_MONEY)
     }
 
-    Money ANY_PRICE = Money.from(2.2)
+    def "Inserting money sends it to session"() {
+        when:
+            machine.insertMoney(SOME_MONEY)
+        then:
+            1 * purchaseSession.insert(SOME_MONEY)
+    }
 
-    int ANY_NUMBER = 5
+    def "Inserting money displays amount left"() {
+        given:
+            purchaseSession.amountLeft() >> SOME_MONEY
+        when:
+            machine.insertMoney(SOME_OTHER_MONEY)
+        then:
+            1 * display.price(SOME_MONEY)
+    }
 
-    RackOfShelves shelves = Mock(RackOfShelves)
+    def "Cancel clears session"() {
+        when:
+            machine.cancel()
+        then:
+            1 * purchaseSession.cancel()
+    }
+
+    def "Cancel clear display"() {
+        when:
+            machine.cancel()
+        then:
+            1 * display.selectProduct()
+    }
+
+    def "Display defaults to product selection prompt"() {
+        when:
+            new VendingMachine(display, purchaseSession)
+        then:
+            1 * display.selectProduct()
+    }
+
+    Money SOME_MONEY = Money.from(2.2)
+
+    Money SOME_OTHER_MONEY = Money.from(1)
+
+    int SOME_NUMBER = 5
 
     Display display = Mock(Display)
 
-    PurchaseSessionFactory purchaseSessionFactory = Mock(PurchaseSessionFactory)
+    PurchaseSession purchaseSession = Mock(PurchaseSession)
 
-    VendingMachine machine = new VendingMachine(shelves, display, purchaseSessionFactory)
+    VendingMachine machine = new VendingMachine(display, purchaseSession)
 }

@@ -1,39 +1,42 @@
 package tdd.vendingMachine.domain;
 
-import lombok.RequiredArgsConstructor;
-import tdd.vendingMachine.domain.product.RackOfShelves;
+import lombok.extern.slf4j.Slf4j;
 import tdd.vendingMachine.domain.product.exception.ProductException;
-import tdd.vendingMachine.domain.transaction.PurchaseSessionFactory;
+import tdd.vendingMachine.domain.transaction.PurchaseSession;
 
-@RequiredArgsConstructor
+@Slf4j
 public class VendingMachine {
-
-    static final String NO_PRODUCT = "No product found";
-
-    private final RackOfShelves shelves;
 
     private final Display display;
 
-    private final PurchaseSessionFactory purchaseSessionFactory;
+    private final PurchaseSession purchaseSession;
+
+    public VendingMachine(Display display, PurchaseSession purchaseSession) {
+        this.display = display;
+        this.purchaseSession = purchaseSession;
+        display.selectProduct();
+    }
 
     public void selectProductFrom(int shelveNumber){
         try {
-            Money price = shelves.priceOfProductAt(shelveNumber);
-            display.showText(price.toString());
-        } catch (ProductException p){
-            display.showText(NO_PRODUCT);
-            return;
+            purchaseSession.start(shelveNumber);
+        } catch (ProductException e){
+            log.info("Exception in resolving product price", e);
+            display.noProductFound();
         }
-
-//        purchaseSessionFactory.newSession()
+        display.price(purchaseSession.amountLeft());
     }
 
-    public void insertMoney(){
-
+    //move to session cash management
+    public void insertMoney(Money denomination){
+       purchaseSession.insert(denomination);
+       display.price(purchaseSession.amountLeft());
     }
 
+    //move to session managemment
     public void cancel(){
-
+        purchaseSession.cancel();
+        display.selectProduct();
     }
 
 
