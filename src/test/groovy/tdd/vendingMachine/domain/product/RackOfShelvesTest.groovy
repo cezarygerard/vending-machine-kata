@@ -1,42 +1,47 @@
 package tdd.vendingMachine.domain.product
 
 import spock.lang.Specification
-import tdd.vendingMachine.domain.Money
 import tdd.vendingMachine.domain.product.exception.NoSuchShelfException
-
+import tdd.vendingMachine.infrastructure.ShelvesRepository
 
 class RackOfShelvesTest extends Specification {
 
-    def "returns price of product at existing shelf"() {
+    def "returns shelf from repository"() {
         given:
-            Map<Integer, ShelfWithProducts> shelves = Mock(Map) {
-                get(EXISTING)>> shelfWithProducts()
-            }
+            repository.get(SHELF_NUMBER) >> shelfWithProducts
+        and:
+            shelfWithProducts.getNumberOfProducts() >> NON_EMPTY
         when:
-            RackOfShelves rack = new RackOfShelves(shelves);
+            def result = rack.findNonEmptyShelf(SHELF_NUMBER)
         then:
-            rack.priceOfProductAt(EXISTING) == shelfWithProducts().getPrice()
+            result == shelfWithProducts
     }
 
-    def "price request of non existing shelf throws exception"() {
+    def "throws exception on null from repository "() {
         given:
-            Map<Integer, ShelfWithProducts> shelves = Mock(Map) {
-                get(NON_EXISTING)>> null
-            }
-            RackOfShelves rack = new RackOfShelves(shelves);
+            repository.get(SHELF_NUMBER) >> null
         when:
-            rack.priceOfProductAt(NON_EXISTING)
+            rack.findNonEmptyShelf(SHELF_NUMBER)
         then:
-            thrown NoSuchShelfException
+            thrown(NoSuchShelfException)
     }
 
-    Integer EXISTING = 3
-    Integer NON_EXISTING = 13
-
-    ShelfWithProducts shelfWithProducts() {
-        Mock(ShelfWithProducts){
-            getPrice() >> Money.from(1,1)
-        }
+    def "throws exception on empty shelf"() {
+        given:
+            repository.get(SHELF_NUMBER) >> shelfWithProducts
+        and:
+            shelfWithProducts.getNumberOfProducts() >> EMPTY
+        when:
+            def result = rack.findNonEmptyShelf(SHELF_NUMBER)
+        then:
+            thrown(NoSuchShelfException)
     }
+
+    int SHELF_NUMBER = 13
+    int NON_EMPTY = 3
+    int EMPTY = 0
+    ShelvesRepository repository = Mock(ShelvesRepository)
+    ShelfWithProducts shelfWithProducts = Mock(ShelfWithProducts)
+    RackOfShelves rack = new RackOfShelves(repository)
 
 }

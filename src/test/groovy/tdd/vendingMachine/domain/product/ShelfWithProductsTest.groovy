@@ -3,6 +3,7 @@ package tdd.vendingMachine.domain.product
 import spock.lang.Specification
 import tdd.vendingMachine.domain.Money
 import tdd.vendingMachine.domain.product.exception.EmptyShelfException
+import tdd.vendingMachine.infrastructure.ProductReleaseRobot
 
 class ShelfWithProductsTest extends Specification {
 
@@ -10,14 +11,14 @@ class ShelfWithProductsTest extends Specification {
         given:
             int numberOfProducts = 10
         when:
-            ShelfWithProducts shelf = new ShelfWithProducts(ANY_PRODUCT, numberOfProducts )
+            ShelfWithProducts shelf = new ShelfWithProducts(ANY_PRODUCT, numberOfProducts, ANY_ROBOT)
         then:
             shelf.numberOfProducts == numberOfProducts
     }
 
     def "Price cech on empty shelf throws exception"() {
         given:
-            ShelfWithProducts shelf = new ShelfWithProducts(ANY_PRODUCT, EMPTY )
+            ShelfWithProducts shelf = new ShelfWithProducts(ANY_PRODUCT, EMPTY, ANY_ROBOT)
         when:
             shelf.price
         then:
@@ -29,20 +30,35 @@ class ShelfWithProductsTest extends Specification {
             Money price = Money.from(3, 30)
             ProductType product = productWithPrice(price)
         when:
-            ShelfWithProducts shelf = new ShelfWithProducts(product, ANY_NUMBER )
+            ShelfWithProducts shelf = new ShelfWithProducts(product, ANY_NUMBER, ANY_ROBOT)
         then:
             shelf.price == price
     }
 
-    private ProductType productWithPrice(Money price){
-        Mock(ProductType){
+
+    def "Dispenses product via ProductReleaseRobot"() {
+        given:
+            ProductReleaseRobot robot  = Mock(ProductReleaseRobot)
+        and:
+            ShelfWithProducts shelf = new ShelfWithProducts(ANY_PRODUCT, ANY_NUMBER, robot)
+        when:
+            shelf.dispense()
+        then:
+             1 * robot.releaseProductFrom(shelf)
+    }
+
+    private ProductType productWithPrice(Money price) {
+        Mock(ProductType) {
             getPrice() >> price
         }
     }
 
-    private final ProductType ANY_PRODUCT = Mock(ProductType)
-    private final int ANY_NUMBER = 5
-    private final int EMPTY = 0
+
+    ProductType ANY_PRODUCT = Mock(ProductType)
+    ProductReleaseRobot ANY_ROBOT  = Mock(ProductReleaseRobot)
+    int ANY_NUMBER = 5
+    int EMPTY = 0
+
 
 }
 

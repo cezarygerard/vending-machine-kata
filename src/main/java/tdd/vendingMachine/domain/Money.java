@@ -3,16 +3,18 @@ package tdd.vendingMachine.domain;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
-public class Money {
+public final class Money implements Comparable<Money> {
 
-    private final long moneyAsCents;
+    public static final Money ZERO = Money.from(0,0);
 
-    private Money(long moneyAsCents) {
-        this.moneyAsCents = moneyAsCents;
+    private final long cents;
+
+    private Money(long cents) {
+        this.cents = cents;
     }
 
     private Money(long units, long cents) {
-        this.moneyAsCents = units * 100 + cents;
+        this.cents = units * 100 + cents;
     }
 
     public static Money from(long units, long cents){
@@ -26,6 +28,20 @@ public class Money {
 
     @Override
     public String toString() {
-        return moneyAsCents/100 + ","+moneyAsCents % 100;
+        return cents /100 + ","+ cents % 100;
+    }
+
+    public Money subtract(Money amount) {
+        return new Money(this.cents - amount.cents);
+    }
+
+    public Money add(Money amount) {
+        return new Money(this.cents + amount.cents);
+    }
+
+
+    @Override
+    public int compareTo(Money other) {
+        return Long.compare(this.cents, other.cents);
     }
 }
