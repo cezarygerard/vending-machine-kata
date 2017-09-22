@@ -3,8 +3,8 @@ package tdd.vendingMachine.domain.transaction
 import spock.lang.Specification
 import tdd.vendingMachine.domain.Money
 import tdd.vendingMachine.domain.cash.CashDeposit
-import tdd.vendingMachine.domain.cash.ChangeRefundException
 import tdd.vendingMachine.domain.cash.InvalidCoinException
+import tdd.vendingMachine.domain.cash.RefundException
 import tdd.vendingMachine.domain.product.RackOfShelves
 import tdd.vendingMachine.domain.product.ShelfWithProducts
 
@@ -105,18 +105,31 @@ class PurchaseProcessTest extends Specification {
             purchaseProcess.amountLeftToPay() == Money.ZERO.subtract(COIN_2)
     }
 
-    def "Error in  change refund cancels the transaction and refunds full amount"() {
+    def "Error in  change refunds full amount and rethrows exception"() {
         given:
             PurchaseProcess purchaseProcess = processWithPrepaymentOf2()
             Money amountPaid = purchaseProcess.amountPaid()
         and:
-            cashDeposit.refund(_) >> {throw new ChangeRefundException()}
+            cashDeposit.refund(_) >> { throw new RefundException() }
         when:
             purchaseProcess.insert(SOME_PRICE)
         then:
             1 * cashDeposit.refund(amountPaid.add(SOME_PRICE))
             purchaseProcess.amountLeftToPay() == Money.ZERO
             purchaseProcess.amountPaid() == Money.ZERO
+            thrown(RefundException)
+    }
+
+    def "Error in  change must not dispense product from shelf"() {
+        given:
+            PurchaseProcess purchaseProcess = processWithPrepaymentOf2()
+        and:
+            cashDeposit.refund(_) >> { throw new RefundException() }
+        when:
+            purchaseProcess.insert(SOME_PRICE)
+        then:
+            0 * shelfWithProducts.dispense()
+            thrown(RefundException)
     }
 
     def "Starting  another product  switches product"() {

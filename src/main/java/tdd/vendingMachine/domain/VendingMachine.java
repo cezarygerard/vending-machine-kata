@@ -1,6 +1,7 @@
 package tdd.vendingMachine.domain;
 
 import lombok.extern.slf4j.Slf4j;
+import tdd.vendingMachine.domain.cash.RefundException;
 import tdd.vendingMachine.domain.product.exception.ProductException;
 import tdd.vendingMachine.domain.transaction.PurchaseProcess;
 
@@ -28,8 +29,13 @@ public class VendingMachine {
     }
 
     public void insertMoney(Money denomination){
-       purchaseSession.insert(denomination);
-       display.price(purchaseSession.amountLeftToPay());
+        try {
+            purchaseSession.insert(denomination);
+            display.price(purchaseSession.amountLeftToPay());
+        } catch (RefundException e) {
+            log.info("Exception in refund", e);
+            display.cannotRefundChange();
+        }
     }
 
     public void cancel(){

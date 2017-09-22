@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import tdd.vendingMachine.domain.Money;
 import tdd.vendingMachine.domain.cash.CashDeposit;
-import tdd.vendingMachine.domain.cash.ChangeRefundException;
 import tdd.vendingMachine.domain.cash.InvalidCoinException;
+import tdd.vendingMachine.domain.cash.RefundException;
 import tdd.vendingMachine.domain.product.RackOfShelves;
 import tdd.vendingMachine.domain.product.ShelfWithProducts;
 
@@ -83,9 +83,10 @@ public class PurchaseProcess {
         try {
             cashDeposit.refund(change);
             selectedShelf.dispense();
-        } catch (ChangeRefundException e){
+        } catch (RefundException e) {
             log.warn("Cannot dispense change: {}, cancelling transaction", change, e);
             cancel();
+            throw e;
         }
     }
 

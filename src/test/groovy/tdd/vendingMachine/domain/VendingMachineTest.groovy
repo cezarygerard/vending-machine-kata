@@ -1,6 +1,7 @@
 package tdd.vendingMachine.domain
 
 import spock.lang.Specification
+import tdd.vendingMachine.domain.cash.RefundException
 import tdd.vendingMachine.domain.product.exception.ProductException
 import tdd.vendingMachine.domain.transaction.PurchaseProcess
 
@@ -45,6 +46,15 @@ class VendingMachineTest extends Specification {
             machine.insertMoney(SOME_OTHER_MONEY)
         then:
             1 * display.price(SOME_MONEY)
+    }
+
+    def "RefundException after inserting money displays warning"() {
+        given:
+            purchaseSession.insert(SOME_MONEY) >> { throw new RefundException() }
+        when:
+            machine.insertMoney(SOME_MONEY)
+        then:
+            1 * display.cannotRefundChange()
     }
 
     def "Cancel clears session"() {

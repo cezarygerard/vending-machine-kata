@@ -7,6 +7,8 @@ interface Display {
     void noProductFound();
 
     void selectProduct();
+
+    char cannotRefundChange();
 }
 
 

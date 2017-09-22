@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-enum CoinDenomination {
+public enum Coin {
     FIVE(Money.from(5, 0)),
     TWO(Money.from(2, 0)),
     ONE(Money.from(1, 0)),
@@ -14,16 +14,16 @@ enum CoinDenomination {
     FIFTH(Money.from(0, 20)),
     TENTH(Money.from(0, 10));
 
-    CoinDenomination(Money value) {
-        this.value = value;
-    }
+    private static final Map<Money, Coin> validDenominations = validDenominations();
 
     private final Money value;
 
-    private static final Map<Money, CoinDenomination> validDenominations = validDenominations();
+    Coin(Money value) {
+        this.value = value;
+    }
 
-    private static Map<Money, CoinDenomination> validDenominations() {
-        return Arrays.stream(CoinDenomination.values())
+    private static Map<Money, Coin> validDenominations() {
+        return Arrays.stream(Coin.values())
                        .collect(Collectors.toMap(
                                denomination -> denomination.value,
                                denomination -> denomination)
@@ -34,7 +34,15 @@ enum CoinDenomination {
         return validDenominations.containsKey(coin);
     }
 
-    static CoinDenomination valueOf(Money money){
+    static Coin valueOf(Money money) {
         return validDenominations().get(money);
     }
+
+    Money getMonetaryValue() {
+        return value;
+    }
+
+
+
+
 }
