@@ -2,7 +2,6 @@ package tdd.vendingMachine.domain.cash
 
 import spock.lang.Specification
 import tdd.vendingMachine.domain.Money
-import tdd.vendingMachine.infrastructure.MoneyStorageMachine
 
 import static tdd.vendingMachine.domain.cash.CashDepositTest.CashDepositAssertion.assertThat
 

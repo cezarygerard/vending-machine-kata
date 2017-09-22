@@ -3,7 +3,6 @@ package tdd.vendingMachine.domain.product
 import spock.lang.Specification
 import tdd.vendingMachine.domain.Money
 import tdd.vendingMachine.domain.product.exception.EmptyShelfException
-import tdd.vendingMachine.infrastructure.ProductReleaseRobot
 
 class ShelfWithProductsTest extends Specification {
 

@@ -1,6 +1,7 @@
-package tdd.vendingMachine.domain;
+package tdd.vendingMachine.domain.controlPanel;
 
 import lombok.extern.slf4j.Slf4j;
+import tdd.vendingMachine.domain.Money;
 import tdd.vendingMachine.domain.cash.RefundException;
 import tdd.vendingMachine.domain.product.exception.ProductException;
 import tdd.vendingMachine.domain.transaction.PurchaseProcess;
@@ -18,17 +19,17 @@ public class VendingMachine {
         display.selectProduct();
     }
 
-    public void selectProductFrom(int shelveNumber){
+    public void selectProductFrom(int shelveNumber) {
         try {
             purchaseSession.selectProduct(shelveNumber);
-        } catch (ProductException e){
+        } catch (ProductException e) {
             log.info("Exception in resolving product", e);
             display.noProductFound();
         }
         display.price(purchaseSession.amountLeftToPay());
     }
 
-    public void insertMoney(Money denomination){
+    public void insertMoney(Money denomination) {
         try {
             purchaseSession.insert(denomination);
             display.price(purchaseSession.amountLeftToPay());
@@ -38,12 +39,10 @@ public class VendingMachine {
         }
     }
 
-    public void cancel(){
+    public void cancel() {
         purchaseSession.cancel();
         display.selectProduct();
     }
-
-
 
 
 }

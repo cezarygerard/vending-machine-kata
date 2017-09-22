@@ -1,6 +1,4 @@
-package tdd.vendingMachine.infrastructure;
-
-import tdd.vendingMachine.domain.cash.Coin;
+package tdd.vendingMachine.domain.cash;
 
 public interface MoneyStorageMachine {
     void releaseCoins(Iterable<Coin> coinsToRelease);

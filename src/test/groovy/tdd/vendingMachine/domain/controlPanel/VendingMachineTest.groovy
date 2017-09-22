@@ -1,6 +1,7 @@
-package tdd.vendingMachine.domain
+package tdd.vendingMachine.domain.controlPanel
 
 import spock.lang.Specification
+import tdd.vendingMachine.domain.Money
 import tdd.vendingMachine.domain.cash.RefundException
 import tdd.vendingMachine.domain.product.exception.ProductException
 import tdd.vendingMachine.domain.transaction.PurchaseProcess

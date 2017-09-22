@@ -1,6 +1,8 @@
-package tdd.vendingMachine.domain;
+package tdd.vendingMachine.domain.controlPanel;
 
-interface Display {
+import tdd.vendingMachine.domain.Money;
+
+public interface Display {
 
     void price(Money money);
 

@@ -1,7 +1,6 @@
 package tdd.vendingMachine.domain.cash;
 
 import tdd.vendingMachine.domain.Money;
-import tdd.vendingMachine.infrastructure.MoneyStorageMachine;
 
 import java.util.*;
 

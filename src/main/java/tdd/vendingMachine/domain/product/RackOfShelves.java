@@ -1,11 +1,7 @@
 package tdd.vendingMachine.domain.product;
 
 import lombok.RequiredArgsConstructor;
-import tdd.vendingMachine.domain.Money;
 import tdd.vendingMachine.domain.product.exception.NoSuchShelfException;
-import tdd.vendingMachine.infrastructure.ShelvesRepository;
-
-import java.util.Map;
 
 @RequiredArgsConstructor
 public class RackOfShelves {

@@ -2,7 +2,6 @@ package tdd.vendingMachine.domain.product
 
 import spock.lang.Specification
 import tdd.vendingMachine.domain.product.exception.NoSuchShelfException
-import tdd.vendingMachine.infrastructure.ShelvesRepository
 
 class RackOfShelvesTest extends Specification {
 
