@@ -83,10 +83,10 @@ public class PurchaseProcess {
         try {
             cashDeposit.refund(change);
             selectedShelf.dispense();
-        } catch (RefundException e) {
-            log.warn("Cannot dispense change: {}, cancelling transaction", change, e);
+        } catch (RefundException refundException) {
+            log.warn("Cannot dispense change: {}, cancelling transaction", change);
             cancel();
-            throw e;
+            throw refundException;
         }
     }
 

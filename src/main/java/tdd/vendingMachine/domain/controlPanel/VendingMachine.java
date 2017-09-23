@@ -33,8 +33,8 @@ public class VendingMachine {
         try {
             purchaseSession.insert(denomination);
             display.price(purchaseSession.amountLeftToPay());
-        } catch (RefundException e) {
-            log.info("Exception in refund", e);
+        } catch (RefundException refundException) {
+            log.info("Exception in refund", refundException);
             display.cannotRefundChange();
         }
     }
